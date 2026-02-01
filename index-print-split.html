@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>小慧&amp;俊哥 - 浪漫之旅（打印版）</title>
+    <title>小慧&amp;俊哥 - 浪漫之旅（打印版·图文分页）</title>
     <style>
-      /* 与 index.html 一致的字体与变量，用于 100% 保留样式 */
       @font-face {
         font-family: "CustomSerif";
         src: url("https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/space/14-字语文刻体.woff2")
@@ -25,7 +24,6 @@
         --accent-color: #7a644e;
       }
 
-      /* 打印版固定尺寸：5:7 比例，与绘本一致 */
       .print-page {
         width: 595px;
         height: 833px;
@@ -50,7 +48,7 @@
         color: var(--text-color);
       }
 
-      /* 封面：整页图 + 底部渐变遮罩与标题 */
+      /* 封面：整页图 + 底部渐变遮罩 */
       .print-page.is-cover .print-image-wrap {
         position: absolute;
         top: 0;
@@ -98,30 +96,31 @@
         letter-spacing: 1px;
       }
 
-      /* 内页：上图下文，比例与当前样式一致（约 58% 图 / 42% 文） */
-      .print-page .print-image-wrap {
+      /* 纯图页：图片占满整页 */
+      .print-page.image-only .print-image-wrap {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 58%;
+        height: 100%;
         background: #000;
         overflow: hidden;
       }
 
-      .print-page .print-image-wrap img {
+      .print-page.image-only .print-image-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
 
-      .print-page .print-text-wrap {
+      /* 纯文页：文字占满整页，居中 */
+      .print-page.text-only .print-text-wrap {
         position: absolute;
-        top: 58%;
+        top: 0;
         left: 0;
         width: 100%;
-        height: 42%;
-        padding: 36px 48px 48px;
+        height: 100%;
+        padding: 60px 48px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -129,17 +128,24 @@
         text-align: center;
         background: var(--page-bg);
         color: var(--text-color);
-        font-size: 50px;
+        font-size: 22px;
         line-height: 1.8;
       }
 
-      /* 按字数区分的字号，与原文一致 */
       .print-text-wrap.short-text {
-        font-size: 50px;
+        font-size: 28px;
       }
 
       .print-text-wrap.medium-text {
         font-size: 50px;
+      }
+
+      .print-text-wrap.long-text {
+        font-size: 18px;
+      }
+
+      .print-text-wrap.extra-long-text {
+        font-size: 15px;
       }
 
       .print-text-wrap p {
@@ -172,7 +178,6 @@
         text-align: center;
       }
 
-      /* 打印时：每页一屏、无背景色、精确尺寸 */
       @media print {
         body {
           background: white;
@@ -212,7 +217,7 @@
         function render(config) {
           if (!config || !config.pages || !config.pages.length) {
             container.innerHTML =
-              '<div class="print-page" style="display:flex;align-items:center;justify-content:center;font-size:18px;color:#666;">请从绘本首页点击「导出 PDF」打开本页后再打印。</div>';
+              '<div class="print-page" style="display:flex;align-items:center;justify-content:center;font-size:18px;color:#666;">请从绘本首页点击「导出 PDF（图文分页）」打开本页后再打印。</div>';
             return;
           }
 
@@ -246,17 +251,24 @@
               continue;
             }
 
-            var text = (page.text || "").trim();
-            var lengthClass = "medium-text";
-            if (text.length < 10) lengthClass = "short-text";
-            else if (text.length > 50) lengthClass = "extra-long-text";
-            else if (text.length > 30) lengthClass = "long-text";
-
+            /* 内页与封底：先一页纯图，再一页纯文 */
             var imgWrap = page.image
               ? '<img src="' + page.image + '" alt="页' + (i + 1) + '">'
               : '<div class="image-placeholder">' +
                 (page.image_error || "暂无图片") +
                 "</div>";
+
+            html +=
+              '<div class="print-page image-only">' +
+              '<div class="print-image-wrap">' +
+              imgWrap +
+              "</div></div>";
+
+            var text = (page.text || "").trim();
+            var lengthClass = "medium-text";
+            if (text.length < 10) lengthClass = "short-text";
+            else if (text.length > 50) lengthClass = "extra-long-text";
+            else if (text.length > 30) lengthClass = "long-text";
 
             var textContent = "";
             if (!isBackCover && text) {
@@ -266,22 +278,17 @@
               '<div class="page-number">' + i + " / " + (total - 1) + "</div>";
 
             html +=
-              '<div class="print-page">' +
-              '<div class="print-image-wrap">' +
-              imgWrap +
-              "</div>" +
+              '<div class="print-page text-only">' +
               '<div class="print-text-wrap ' +
               lengthClass +
               '">' +
               textContent +
-              "</div>" +
-              "</div>";
+              "</div></div>";
           }
 
           container.innerHTML = html;
         }
 
-        // 通过 postMessage 从首页接收配置，避免 file:// 下 opener 跨域无法读取
         function onMessage(e) {
           if (e.data && e.data.type === "PICTUREBOOK_CONFIG" && e.data.config) {
             window.removeEventListener("message", onMessage);
