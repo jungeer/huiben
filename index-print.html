@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小慧&amp;俊哥 - 浪漫之旅（打印版）</title>
+    <style>
+      /* 与 index.html 一致的字体与变量，用于 100% 保留样式 */
+      @font-face {
+        font-family: "CustomSerif";
+        src: url("https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/space/14-字语文刻体.woff2")
+          format("woff2");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --page-bg: #fffbf0;
+        --text-color: #2c3e50;
+        --accent-color: #7a644e;
+      }
+
+      /* 打印版固定尺寸：5:7 比例，与绘本一致 */
+      .print-page {
+        width: 595px;
+        height: 833px;
+        position: relative;
+        overflow: hidden;
+        background: var(--page-bg);
+        page-break-after: always;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .print-page:last-child {
+        page-break-after: auto;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f0f0f0;
+        font-family: "CustomSerif", "Microsoft YaHei", "PingFang SC", serif;
+        color: var(--text-color);
+      }
+
+      /* 封面：整页图 + 底部渐变遮罩与标题 */
+      .print-page.is-cover .print-image-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+
+      .print-page.is-cover .print-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .print-page.is-cover .cover-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 60px 40px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.7) 0%,
+          rgba(0, 0, 0, 0.4) 50%,
+          transparent 100%
+        );
+        color: white;
+        text-align: center;
+        border-radius: 0;
+      }
+
+      .print-page.is-cover .cover-overlay h1 {
+        font-size: 42px;
+        margin: 0 0 15px 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        letter-spacing: 2px;
+      }
+
+      .print-page.is-cover .cover-overlay h2 {
+        font-size: 22px;
+        margin: 0;
+        opacity: 0.9;
+        font-weight: 300;
+        letter-spacing: 1px;
+      }
+
+      /* 内页：上图下文，比例与当前样式一致（约 58% 图 / 42% 文） */
+      .print-page .print-image-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 58%;
+        background: #000;
+        overflow: hidden;
+      }
+
+      .print-page .print-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .print-page .print-text-wrap {
+        position: absolute;
+        top: 58%;
+        left: 0;
+        width: 100%;
+        height: 42%;
+        padding: 36px 48px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: var(--page-bg);
+        color: var(--text-color);
+        font-size: 22px;
+        line-height: 1.8;
+      }
+
+      /* 按字数区分的字号，与原文一致 */
+      .print-text-wrap.short-text {
+        font-size: 28px;
+      }
+
+      .print-text-wrap.medium-text {
+        font-size: 22px;
+      }
+
+      .print-text-wrap.long-text {
+        font-size: 18px;
+      }
+
+      .print-text-wrap.extra-long-text {
+        font-size: 15px;
+      }
+
+      .print-text-wrap p {
+        margin: 0 0 16px 0;
+      }
+
+      .print-page .page-number {
+        position: absolute;
+        bottom: 24px;
+        right: 40px;
+        font-size: 14px;
+        color: #95a5a6;
+        font-family: Georgia, serif;
+      }
+
+      .image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.62),
+          rgba(0, 0, 0, 0.22)
+        );
+        color: rgba(255, 255, 255, 0.96);
+        font-size: 16px;
+        text-align: center;
+      }
+
+      /* 打印时：每页一屏、无背景色、精确尺寸 */
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+          margin: 0;
+        }
+
+        .print-page {
+          width: 210mm;
+          height: 294mm;
+          max-width: 210mm;
+          max-height: 294mm;
+          page-break-after: always;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          background: var(--page-bg);
+        }
+
+        .print-page:last-child {
+          page-break-after: auto;
+        }
+
+        @page {
+          size: 210mm 294mm;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="print-pages"></div>
+    <script>
+      (function () {
+        var container = document.getElementById("print-pages");
+
+        function render(config) {
+          if (!config || !config.pages || !config.pages.length) {
+            container.innerHTML =
+              '<div class="print-page" style="display:flex;align-items:center;justify-content:center;font-size:18px;color:#666;">请从绘本首页点击「导出 PDF」打开本页后再打印。</div>';
+            return;
+          }
+
+          var pages = config.pages;
+        var total = pages.length;
+        var html = "";
+
+        for (var i = 0; i < total; i++) {
+          var page = pages[i];
+          var isCover = page.type === "cover" || i === 0;
+          var isBackCover = page.type === "back_cover";
+
+          if (isCover) {
+            var imgBlock = page.image
+              ? '<img src="' + page.image + '" alt="封面">'
+              : '<div class="image-placeholder">' + (page.image_error || "暂无图片") + "</div>";
+            html +=
+              '<div class="print-page is-cover">' +
+              '<div class="print-image-wrap">' +
+              imgBlock +
+              '</div><div class="cover-overlay">' +
+              "<h1>" + (page.title || config.title || "") + "</h1>" +
+              "<h2>" + (page.author || config.author || "") + "</h2>" +
+              "</div></div>";
+            continue;
+          }
+
+          var text = (page.text || "").trim();
+          var lengthClass = "medium-text";
+          if (text.length < 10) lengthClass = "short-text";
+          else if (text.length > 50) lengthClass = "extra-long-text";
+          else if (text.length > 30) lengthClass = "long-text";
+
+          var imgWrap =
+            page.image
+              ? '<img src="' + page.image + '" alt="页' + (i + 1) + '">'
+              : '<div class="image-placeholder">' + (page.image_error || "暂无图片") + "</div>";
+
+          var textContent = "";
+          if (!isBackCover && text) {
+            textContent = '<p>' + text + "</p>";
+          }
+          textContent +=
+            '<div class="page-number">' + i + " / " + (total - 1) + "</div>";
+
+          html +=
+            '<div class="print-page">' +
+            '<div class="print-image-wrap">' +
+            imgWrap +
+            "</div>" +
+            '<div class="print-text-wrap ' +
+            lengthClass +
+            '">' +
+            textContent +
+            "</div>" +
+            "</div>";
+        }
+
+          container.innerHTML = html;
+        }
+
+        // 通过 postMessage 从首页接收配置，避免 file:// 下 opener 跨域无法读取
+        function onMessage(e) {
+          if (e.data && e.data.type === "PICTUREBOOK_CONFIG" && e.data.config) {
+            window.removeEventListener("message", onMessage);
+            render(e.data.config);
+          }
+        }
+        window.addEventListener("message", onMessage);
+
+        if (window.opener) {
+          window.opener.postMessage({ type: "REQUEST_CONFIG" }, "*");
+        } else {
+          render(null);
+        }
+      })();
+    </script>
+  </body>
+</html>

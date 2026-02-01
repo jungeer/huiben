@@ -562,8 +562,7 @@
         }
 
         .btn-print::after {
-          content: "打印";
-          /* Keeping it slightly longer but ensuring wrapping is fixed */
+          content: "导出 PDF";
           font-size: 0.95rem;
           font-weight: 700;
         }
@@ -1450,6 +1449,13 @@
       </button>
       <button class="btn" id="muteBtn" title="静音">🔊</button>
       <button class="btn" id="nextBtn" title="下一页">→</button>
+      <button
+        class="btn btn-print"
+        onclick="window.open('index-print.html','_blank');"
+        title="导出 PDF（打开打印版后按 Ctrl+P 另存为 PDF）"
+      >
+        导出 PDF
+      </button>
     </div>
 
     <audio id="audioPlayer"></audio>
@@ -1635,6 +1641,16 @@
           },
         ],
       };
+
+      // 打印页通过 postMessage 请求配置，避免 file:// 下跨域无法读 opener
+      window.addEventListener("message", function (e) {
+        if (e.data && e.data.type === "REQUEST_CONFIG") {
+          e.source.postMessage(
+            { type: "PICTUREBOOK_CONFIG", config: PICTUREBOOK_CONFIG },
+            "*"
+          );
+        }
+      });
 
       // DOM Elements
       const book = document.getElementById("book");
