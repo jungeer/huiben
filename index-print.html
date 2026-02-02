@@ -50,6 +50,22 @@
         color: var(--text-color);
       }
 
+      /* 新增第一页：仅指定图片，无标题遮罩 */
+      .print-page.is-first-page .print-image-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+
+      .print-page.is-first-page .print-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       /* 封面：整页图 + 底部渐变遮罩与标题 */
       .print-page.is-cover .print-image-wrap {
         position: absolute;
@@ -220,13 +236,22 @@
           var total = pages.length;
           var html = "";
 
+          // 新增第一页：仅指定图片，无标题遮罩
+          var firstPageImageUrl = "https://s.coze.cn/image/SlNisuUY5EY/";
+          html +=
+            '<div class="print-page is-first-page">' +
+            '<div class="print-image-wrap">' +
+            '<img src="' + firstPageImageUrl + '" alt="">' +
+            "</div></div>";
+
           for (var i = 0; i < total; i++) {
             var page = pages[i];
             var isCover = page.type === "cover" || i === 0;
             var isBackCover = page.type === "back_cover";
 
             if (isCover) {
-              var imgBlock = page.image
+              // 原封面页排到第二页：使用配置中的封面图 + 标题/作者遮罩
+              var coverImgWrap = page.image
                 ? '<img src="' + page.image + '" alt="封面">'
                 : '<div class="image-placeholder">' +
                   (page.image_error || "暂无图片") +
@@ -234,7 +259,7 @@
               html +=
                 '<div class="print-page is-cover">' +
                 '<div class="print-image-wrap">' +
-                imgBlock +
+                coverImgWrap +
                 '</div><div class="cover-overlay">' +
                 "<h1>" +
                 (page.title || config.title || "") +
