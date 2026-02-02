@@ -144,24 +144,24 @@
         text-align: center;
         background: var(--page-bg);
         color: var(--text-color);
-        font-size: 22px;
+        font-size: 60px;
         line-height: 1.8;
       }
 
       .print-text-wrap.short-text {
-        font-size: 28px;
+        font-size: 60px;
       }
 
       .print-text-wrap.medium-text {
-        font-size: 50px;
+        font-size: 60px;
       }
 
       .print-text-wrap.long-text {
-        font-size: 18px;
+        font-size: 60px;
       }
 
       .print-text-wrap.extra-long-text {
-        font-size: 15px;
+        font-size: 60px;
       }
 
       .print-text-wrap p {
@@ -246,7 +246,9 @@
           html +=
             '<div class="print-page is-first-page">' +
             '<div class="print-image-wrap">' +
-            '<img src="' + firstPageImageUrl + '" alt="">' +
+            '<img src="' +
+            firstPageImageUrl +
+            '" alt="">' +
             "</div></div>";
 
           for (var i = 0; i < total; i++) {
