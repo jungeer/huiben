@@ -133,6 +133,37 @@
         letter-spacing: 1px;
       }
 
+      /* 第三页：赠言页，照片小图在上、文案在下，居中 */
+      .print-page.is-dedication {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 48px;
+        text-align: center;
+      }
+
+      .print-page.is-dedication .dedication-photo {
+        max-width: 150px;
+        width: 100%;
+        border-radius: 4px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .print-page.is-dedication .dedication-photo img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .print-page.is-dedication .dedication-text {
+        margin-top: 32px;
+        font-size: 20px;
+        line-height: 1.6;
+        color: var(--text-color);
+        letter-spacing: 1px;
+      }
+
       /* 内页：上图下文，比例与当前样式一致（约 58% 图 / 42% 文） */
       .print-page .print-image-wrap {
         position: absolute;
@@ -260,7 +291,9 @@
           html +=
             '<div class="print-page is-first-page">' +
             '<div class="print-image-wrap">' +
-            '<img src="' + firstPageImageUrl + '" alt="">' +
+            '<img src="' +
+            firstPageImageUrl +
+            '" alt="">' +
             "</div>" +
             '<div class="first-page-qrcode"><img src="qrcode.png" alt="二维码"></div>' +
             "</div>";
@@ -289,6 +322,16 @@
                 (page.author || config.author || "") +
                 "</h2>" +
                 "</div></div>";
+              // 第三页：赠言页（拍立得照片 + 文案，居中）
+              html +=
+                '<div class="print-page is-dedication">' +
+                '<div class="dedication-photo">' +
+                '<img src="拍立得.jpeg" alt="">' +
+                "</div>" +
+                '<p class="dedication-text">仅以此书送给最可爱的小慧</p>' +
+                "</div>";
+              // 第四页：留白
+              html += '<div class="print-page"></div>';
               continue;
             }
 
